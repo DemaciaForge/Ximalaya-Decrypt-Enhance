@@ -2,7 +2,7 @@
 
 此工具用于解密喜马拉雅下载下来的 `.xm` 文件成普通音频。会尽量保留完整信息，输出支持 `m4a`、`mp3`、`flac` 和 `wav`等格式
 
-当前版本：**v1.0.6**
+当前版本：**v1.0.7**
 
 > 请遵守喜马拉雅的服务条款、版权规定和当地法律。本程序仅供学习使用，下载后请于3天内删除。
 
@@ -20,7 +20,7 @@
 
 在 [Releases](https://github.com/a176073240-cmd/Ximalaya-Decrypt-Enhance/releases) 下载最新版本。
 
-如果你只想直接用，下载 `Ximalaya-Decrypt-v1.0.6-Windows-x64.zip`，解压后按需要运行：
+如果你只想直接用，下载 `Ximalaya-Decrypt-v1.0.7-Windows-x64.zip`，解压后按需要运行：
 
 ```text
 Ximalaya-Decrypt.exe   # 解密 XM 文件
@@ -84,12 +84,11 @@ output/
 
 它只处理当前文件夹，不会递归子目录。标题本身带数字时，改名后请检查一下结果；批量操作前也建议先备份。
 
-## v1.0.6 更新
+## v1.0.7 更新
 
-- 新增 Windows 64 位 EXE，解压后可直接使用。
-- 解密程序改用兼容 Python 3.12 的 Wasmtime WebAssembly 运行时。
-- EXE 已内置 `xm_encryptor.wasm` 和运行所需的原生组件。
-- 保留 v1.0.5 的完整性检查、文件名保护和批量重命名冲突修复。
+- 修复非 XM 文件、损坏 ID3 元数据、截断加密数据和无效 AES 初始向量的错误识别。
+- 增加输入校验回归测试，避免底层库异常直接中断批量任务。
+- 保留 v1.0.6 的 Windows 64 位 EXE 和 Wasmtime 打包方式。
 
 ## 常见问题
 
