@@ -44,7 +44,15 @@ def read_file(x):
 
 
 def get_xm_info(data: bytes):
-    id3 = ID3(io.BytesIO(data), v2_version=3)
+    if len(data) < 10 or data[:3] != b"ID3":
+        raise ValueError(
+            "文件开头不是 ID3v2 标签，当前仅支持标准 XM 文件；"
+            "请确认文件完整且扩展名正确"
+        )
+    try:
+        id3 = ID3(io.BytesIO(data), v2_version=3)
+    except mutagen.MutagenError as exc:
+        raise ValueError("XM 文件的 ID3 元数据损坏或不受支持") from exc
     id3value = XMInfo()
     try:
         id3value.title = str(id3["TIT2"])
@@ -63,6 +71,14 @@ def get_xm_info(data: bytes):
     id3value.ISRC = "" if id3.get("TSRC") is None else str(id3["TSRC"])
     id3value.encodedby = "" if id3.get("TENC") is None else str(id3["TENC"])
     id3value.header_size = id3.size
+    if id3value.size <= 0 or id3value.header_size + id3value.size > len(data):
+        raise ValueError("XM 文件的加密数据长度无效，文件可能不完整")
+    try:
+        iv = id3value.iv()
+    except ValueError as exc:
+        raise ValueError("XM 文件缺少有效的 AES 初始向量") from exc
+    if len(iv) != AES.block_size:
+        raise ValueError("XM 文件的 AES 初始向量长度无效")
     return id3value
 
 
